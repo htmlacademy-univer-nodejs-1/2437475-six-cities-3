@@ -17,18 +17,32 @@
     "ts": "ts-node"
   },
   "devDependencies": {
-    "@types/node": "18.17.17",
+    "@types/commander": "^2.12.2",
+    "@types/node": "^18.17.17",
     "@typescript-eslint/eslint-plugin": "6.7.0",
     "@typescript-eslint/parser": "6.7.0",
-    "eslint": "8.49.0",
+    "eslint": "^8.49.0",
     "eslint-config-htmlacademy": "9.1.1",
     "rimraf": "5.0.1",
-    "ts-node": "10.9.1",
-    "typescript": "5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2"
   },
   "type": "module",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=8"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
+  },
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "./dist"
   }
 }
