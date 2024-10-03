@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /* node run cli -- help */
 
@@ -44,10 +44,10 @@ export interface RentOfferWithUser extends RentOffer {
 async function importData(inputFile: string): Promise<void> {
   try {
     const data = await fs.readFile(inputFile, 'utf-8');
-    
+
     // Парсинг данных из TVS файла
     const parsedData = parseTSV(data);
-    
+
     console.log(chalk.green(`Импортированы данные из файла: ${inputFile}\n`));
     console.log(chalk.gray(JSON.stringify(parsedData, null, 2)));
   } catch (error) {
@@ -67,13 +67,13 @@ function printHelp(): void {
 }
 
 function parseTSV(data: string): RentOfferWithUser[] {
-  const rows = data.split('\n').filter(row => row.trim().length > 0);
-  
-  return rows.map(row => {
+  const rows = data.split('\n').filter((row) => row.trim().length > 0);
+
+  return rows.map((row) => {
     const fields = row.split('\t');
-    
+
     // Удаление кавычек из начала и конца каждого поля
-    const cleanedFields = fields.map(field => field.replace(/^"|"$/g, ''));
+    const cleanedFields = fields.map((field) => field.replace(/^"|"$/g, ''));
 
     const [
       name,
@@ -98,7 +98,7 @@ function parseTSV(data: string): RentOfferWithUser[] {
       userType,
       coordinates
     ] = cleanedFields;
-    
+
     return {
       name,
       description,
@@ -132,7 +132,7 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  
+
   try {
     const packageJsonString = await fs.readFile(path.join(__dirname, '..', 'package.json'), 'utf-8');
     const packageJson: PackageJson = JSON.parse(packageJsonString);
@@ -145,7 +145,7 @@ async function main(): Promise<void> {
       case 'help':
         printHelp();
         break;
-      case 'version': 
+      case 'version':
         console.log(chalk.cyan(`Версия: ${packageJson.version}`));
         break;
       case 'import': {
@@ -157,7 +157,7 @@ async function main(): Promise<void> {
         await importData(args[1]);
         break;
       }
-      case 'generate': 
+      case 'generate':
         console.error(chalk.redBright('Команда --generate не поддерживается.'));
         break;
       default:
