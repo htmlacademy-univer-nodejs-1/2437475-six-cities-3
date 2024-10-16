@@ -14,6 +14,20 @@ npm run cli -- generate 30 ./mocks/test_data.tsv http://localhost:3000/randomDat
 npm run cli -- import ./mocks/test_data.tsv
 */
 
+interface City {
+  latitude: number;
+  longitude: number;
+}
+
+interface RandomUser {
+  id: string[];
+  name: string[];
+  email: string[];
+  avatar?: string[];
+  password: string[];
+  type: string[];
+}
+
 interface RandomData {
   name: string[];
   description: string[];
@@ -30,20 +44,6 @@ interface RandomData {
   price: number[];
   features: string[][];
   user: RandomUser;
-}
-
-interface City {
-  latitude: number;
-  longitude: number;
-}
-
-interface RandomUser {
-  id: string[];
-  name: string[];
-  email: string[];
-  avatar?: string[];
-  password: string[];
-  type: string[];
 }
 
 interface ServerData {
@@ -188,7 +188,7 @@ function generateRandomRentOfferWithUser(): RentOfferWithUser {
       email: getRandomElement(data.user.email),
       avatar: getRandomElement(data.user.avatar || []),
       password: getRandomElement(data.user.password),
-      type: getRandomElement(data.user.type) as "обычный" | "pro"
+      type: getRandomElement(data.user.type) as 'обычный' | 'pro'
     },
     coordinates: {
       latitude: Number(data.city[city].latitude),
@@ -240,15 +240,15 @@ async function generateTestData(n: number, filepath: string, url: string): Promi
 
   const writeStream = createWriteStream(filepath, { flags: 'w' });
 
-    const writeDataAsync = async () => {
-      await new Promise((resolve) => {
-        writeStream.on('finish', resolve);
-        writeStream.write(tsvData);
-      });
-    };
-    await writeDataAsync();
+  const writeDataAsync = async () => {
+    await new Promise((resolve) => {
+      writeStream.on('finish', resolve);
+      writeStream.write(tsvData);
+    });
+  };
+  await writeDataAsync();
 
-    console.log(chalk.green(`Сгенерированы ${n} тестовых предложений в файле: ${filepath}`));
+  console.log(chalk.green(`Сгенерированы ${n} тестовых предложений в файле: ${filepath}`));
 }
 
 async function main(): Promise<void> {
