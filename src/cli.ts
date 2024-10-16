@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import fs from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RentOffer } from '../types.js';
@@ -10,9 +10,47 @@ import { User } from '../types.js';
 import { RentOfferWithUser } from '../types.js';
 
 /* npm run cli -- help
-npm run cli -- generate 30 ./mocks/test_data.tsv http://localhost:3000/
+npm run cli -- generate 30 ./mocks/test_data.tsv http://localhost:3000/randomData
 npm run cli -- import ./mocks/test_data.tsv
 */
+
+interface RandomData {
+  name: string[];
+  description: string[];
+  publishedAt: string[];
+  city: Record<string, City>;
+  previewImage: string[];
+  images: string[][];
+  premium: boolean[];
+  favorite: boolean[];
+  rating: number[];
+  type: string[];
+  rooms: number[];
+  guests: number[];
+  price: number[];
+  features: string[][];
+  user: RandomUser;
+}
+
+interface City {
+  latitude: number;
+  longitude: number;
+}
+
+interface RandomUser {
+  id: string[];
+  name: string[];
+  email: string[];
+  avatar?: string[];
+  password: string[];
+  type: string[];
+}
+
+interface ServerData {
+  randomData: RandomData;
+}
+
+let ServerData: RandomData;
 
 interface PackageJson {
   version: string;
@@ -87,7 +125,7 @@ function parseTSVRow(row: string): RentOfferWithUser {
     publishedAt: new Date(publishedAt),
     city: city as RentOffer['city'],
     previewImage,
-    images: images.split(','),
+    images: images.split(';'),
     premium: Boolean(premium),
     favorite: Boolean(favorite),
     rating: Number(rating),
@@ -95,7 +133,7 @@ function parseTSVRow(row: string): RentOfferWithUser {
     rooms: Number(rooms),
     guests: Number(guests),
     price: Number(price),
-    features: features.split(','),
+    features: features.split(';'),
     user: {
       id: userId,
       name: userName,
@@ -122,63 +160,57 @@ function printHelp(): void {
   `));
 }
 
-const cities = {
-  'Paris': { latitude: 48.85661, longitude: 2.351499 },
-  'Cologne': { latitude: 50.938361, longitude: 6.959974 },
-  'Brussels': { latitude: 50.846557, longitude: 4.351697 },
-  'Amsterdam': { latitude: 52.370216, longitude: 4.895168 },
-  'Hamburg': { latitude: 53.550341, longitude: 10.000654 },
-  'Dusseldorf': { latitude: 51.225402, longitude: 6.776314 }
-};
-
-const types = ['apartment', 'house', 'room', 'hotel'];
-const features = ['Breakfast', 'Air conditioning', 'Laptop friendly workspace', 'Baby seat', 'Washer', 'Towels', 'Fridge'];
-
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomBoolean(): boolean {
-  return Math.random() < 0.5;
-}
-
 function getRandomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
 function generateRandomRentOfferWithUser(): RentOfferWithUser {
-  const city = getRandomElement(Object.keys(cities));
+  const data = ServerData;
+  const city = getRandomElement(Object.keys(data.city));
   return {
-    name: `Random Offer ${Math.random().toString(36).slice(2, 12)}`,
-    description: 'Random description',
-    publishedAt: new Date(),
+    name: getRandomElement(data.name),
+    description: getRandomElement(data.description),
+    publishedAt: new Date(getRandomElement(data.publishedAt)),
     city: city,
-    previewImage: 'https://example.com/random-preview.jpg',
-    images: [getRandomElement(features)],
-    premium: getRandomBoolean(),
-    favorite: getRandomBoolean(),
-    rating: Math.random() * 4 + 1,
-    type: getRandomElement(types),
-    rooms: getRandomInt(1, 8),
-    guests: getRandomInt(1, 10),
+    previewImage: getRandomElement(data.previewImage),
+    images: getRandomElement(data.images),
+    premium: getRandomElement(data.premium),
+    favorite: getRandomElement(data.favorite),
+    rating: getRandomElement(data.rating),
+    type: getRandomElement(data.type),
+    rooms: getRandomElement(data.rooms),
+    guests: getRandomElement(data.guests),
     price: Math.floor(Math.random() * 90000 + 100),
-    features: Array.from({ length: getRandomInt(1, 6) }, () => getRandomElement(features)),
+    features: getRandomElement(data.features),
     user: {
-      id: Math.random().toString(36).slice(2, 12),
-      name: `User ${Math.random().toString(36).slice(2, 12)}`,
-      email: `${Math.random().toString(36).slice(2, 12)}@example.com`,
-      avatar: '',
-      password: 'password123',
-      type: 'обычный'
+      id: getRandomElement(data.user.id),
+      name: getRandomElement(data.user.name),
+      email: getRandomElement(data.user.email),
+      avatar: getRandomElement(data.user.avatar || []),
+      password: getRandomElement(data.user.password),
+      type: getRandomElement(data.user.type) as "обычный" | "pro"
     },
     coordinates: {
-      latitude: Number(Object.values(cities)[Object.keys(cities).indexOf(city)].latitude),
-      longitude: Number(Object.values(cities)[Object.keys(cities).indexOf(city)].longitude)
+      latitude: Number(data.city[city].latitude),
+      longitude: Number(data.city[city].longitude)
     }
   };
 }
 
-async function generateTestData(n: number, filepath: string): Promise<void> {
+async function generateTestData(n: number, filepath: string, url: string): Promise<void> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    ServerData = data as RandomData;
+    // console.log(chalk.green('Полученные данные:', JSON.stringify(data, null, 2)));
+
+  } catch (error) {
+    console.error(chalk.red(`Ошибка при загрузке данных: ${(error as Error).message}`));
+  }
+
   const rentOffers: RentOfferWithUser[] = Array.from({ length: n }, generateRandomRentOfferWithUser);
 
   const tsvData = rentOffers.map((offer) => [
@@ -187,7 +219,7 @@ async function generateTestData(n: number, filepath: string): Promise<void> {
     offer.publishedAt.toISOString(),
     offer.city,
     offer.previewImage,
-    offer.images.join(','),
+    offer.images.join(';'),
     offer.premium.toString(),
     offer.favorite.toString(),
     offer.rating.toFixed(1),
@@ -195,7 +227,7 @@ async function generateTestData(n: number, filepath: string): Promise<void> {
     offer.rooms.toString(),
     offer.guests.toString(),
     offer.price.toString(),
-    offer.features.join(','),
+    offer.features.join(';'),
     offer.user.id,
     offer.user.name,
     offer.user.email,
@@ -206,8 +238,17 @@ async function generateTestData(n: number, filepath: string): Promise<void> {
     offer.coordinates.longitude.toString()
   ].join('\t')).join('\n');
 
-  await fs.writeFile(filepath, tsvData, 'utf8');
-  console.log(chalk.green(`Генерированы ${n} тестовых предложений в файле: ${filepath}`));
+  const writeStream = createWriteStream(filepath, { flags: 'w' });
+
+    const writeDataAsync = async () => {
+      await new Promise((resolve) => {
+        writeStream.on('finish', resolve);
+        writeStream.write(tsvData);
+      });
+    };
+    await writeDataAsync();
+
+    console.log(chalk.green(`Сгенерированы ${n} тестовых предложений в файле: ${filepath}`));
 }
 
 async function main(): Promise<void> {
@@ -256,7 +297,7 @@ async function main(): Promise<void> {
           return;
         }
 
-        await generateTestData(n, filepath);
+        await generateTestData(n, filepath, url);
         break;
       }
       default:

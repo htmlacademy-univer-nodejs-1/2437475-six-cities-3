@@ -1,200 +1,171 @@
 {
-  "rentOffers": [
-    {
-      "name": "Название предложения 1",
-      "description": "Описание предложения 1",
-      "publishedAt": "2024-09-24T00:00:00Z",
-      "city": "Paris",
-      "previewImage": "https://example.com/preview1.jpg",
-      "images": ["https://example.com/photo1.jpg", "https://example.com/photo2.jpg"],
-      "premium": true,
-      "favorite": false,
-      "rating": 4.5,
-      "type": "apartment",
-      "rooms": 3,
-      "guests": 5,
-      "price": 15000,
-      "features": ["Breakfast", "Air conditioning", "Laptop friendly workspace", "Baby seat", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+  "randomData": {
+    "name": [
+      "Название предложения 1",
+      "Название предложения 2",
+      "Название предложения 3",
+      "Название предложения 4",
+      "Название предложения 5"
+    ],
+    "description": [
+      "Описание предложения 1",
+      "Описание предложения 2",
+      "Описание предложения 3",
+      "Описание предложения 4",
+      "Описание предложения 5"
+    ],
+    "publishedAt": [
+      "2024-09-24T00:00:00Z",
+      "2024-09-25T00:00:00Z",
+      "2024-10-24T00:00:00Z",
+      "2024-08-24T00:00:00Z",
+      "2024-07-24T00:00:00Z"
+    ],
+    "city": {
+      "Paris": {
         "latitude": 48.85661,
         "longitude": 2.351499
       },
-      "user": {
-        "id": "1",
-        "name": "Иван Иванов",
-        "email": "ivan@example.com",
-        "avatar": "https://avatars.example.com/ivan.jpg",
-        "password": "password123",
-        "type": "обычный"
-      }
-    },
-    {
-      "name": "Название предложения 2",
-      "description": "Описание предложения 2",
-      "publishedAt": "2024-09-25T00:00:00Z",
-      "city": "Cologne",
-      "previewImage": "https://example.com/preview2.jpg",
-      "images": ["https://example.com/photo7.jpg", "https://example.com/photo8.jpg"],
-      "premium": false,
-      "favorite": true,
-      "rating": 4.8,
-      "type": "house",
-      "rooms": 4,
-      "guests": 8,
-      "price": 30000,
-      "features": ["Air conditioning", "Laptop friendly workspace", "Baby seat", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+      "Cologne": {
         "latitude": 50.938361,
         "longitude": 6.959974
       },
-      "user": {
-        "id": "2",
-        "name": "Мария Петрова",
-        "email": "maria@example.com",
-        "avatar": "",
-        "password": "password456",
-        "type": "pro"
-      }
-    },
-    {
-      "name": "Название предложения 3",
-      "description": "Описание предложения 3",
-      "publishedAt": "2024-09-26T00:00:00Z",
-      "city": "Brussels",
-      "previewImage": "https://example.com/preview3.jpg",
-      "images": ["https://example.com/photo13.jpg", "https://example.com/photo14.jpg"],
-      "premium": true,
-      "favorite": false,
-      "rating": 4.2,
-      "type": "room",
-      "rooms": 1,
-      "guests": 2,
-      "price": 8000,
-      "features": ["Air conditioning", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+      "Brussels": {
         "latitude": 50.846557,
         "longitude": 4.351697
       },
-      "user": {
-        "id": "3",
-        "name": "Андрей Сидоров",
-        "email": "andrey@example.com",
-        "avatar": "https://avatars.example.com/andrey.jpg",
-        "password": "password789",
-        "type": "обычный"
-      }
-    },
-    {
-      "name": "Название предложения 4",
-      "description": "Описание предложения 4",
-      "publishedAt": "2024-09-27T00:00:00Z",
-      "city": "Amsterdam",
-      "previewImage": "https://example.com/preview4.jpg",
-      "images": ["https://example.com/photo15.jpg", "https://example.com/photo16.jpg"],
-      "premium": false,
-      "favorite": true,
-      "rating": 4.7,
-      "type": "apartment",
-      "rooms": 2,
-      "guests": 4,
-      "price": 25000,
-      "features": ["Breakfast", "Air conditioning", "Baby seat", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+      "Amsterdam": {
         "latitude": 52.370216,
         "longitude": 4.895168
       },
-      "user": {
-        "id": "4",
-        "name": "Елена Козлова",
-        "email": "yelena@example.com",
-        "avatar": "",
-        "password": "password012",
-        "type": "pro"
-      }
-    },
-    {
-      "name": "Название предложения 5",
-      "description": "Описание предложения 5",
-      "publishedAt": "2024-09-28T00:00:00Z",
-      "city": "Hamburg",
-      "previewImage": "https://example.com/preview5.jpg",
-      "images": ["https://example.com/photo17.jpg", "https://example.com/photo18.jpg"],
-      "premium": true,
-      "favorite": false,
-      "rating": 4.6,
-      "type": "house",
-      "rooms": 5,
-      "guests": 10,
-      "price": 40000,
-      "features": ["Air conditioning", "Laptop friendly workspace", "Baby seat", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+      "Hamburg": {
         "latitude": 53.550341,
         "longitude": 10.000654
       },
-      "user": {
-        "id": "5",
-        "name": "Александр Петров",
-        "email": "alexander@example.com",
-        "avatar": "https://avatars.example.com/alexander.jpg",
-        "password": "password345",
-        "type": "обычный"
-      }
-    },
-    {
-      "name": "Название предложения 6",
-      "description": "Описание предложения 6",
-      "publishedAt": "2024-09-29T00:00:00Z",
-      "city": "Dusseldorf",
-      "previewImage": "https://example.com/preview6.jpg",
-      "images": ["https://example.com/photo19.jpg", "https://example.com/photo20.jpg"],
-      "premium": false,
-      "favorite": true,
-      "rating": 4.9,
-      "type": "hotel",
-      "rooms": 8,
-      "guests": 10,
-      "price": 35000,
-      "features": ["Breakfast", "Air conditioning", "Laptop friendly workspace", "Baby seat", "Washer", "Towels", "Fridge"],
-      "coordinates": {
+      "Dusseldorf": {
         "latitude": 51.225402,
         "longitude": 6.776314
-      },
-      "user": {
-        "id": "6",
-        "name": "Наталья Васильева",
-        "email": "natalya@example.com",
-        "avatar": "",
-        "password": "password678",
-        "type": "pro"
       }
     },
-    {
-      "name": "Название предложения 7",
-      "description": "Описание предложения 7",
-      "publishedAt": "2024-09-30T00:00:00Z",
-      "city": "Paris",
-      "previewImage": "https://example.com/preview7.jpg",
-      "images": ["https://example.com/photo21.jpg", "https://example.com/photo22.jpg"],
-      "premium": true,
-      "favorite": false,
-      "rating": 4.3,
-      "type": "studio",
-      "rooms": 1,
-      "guests": 3,
-      "price": 10000,
-      "features": ["Air conditioning", "Washer", "Towels", "Fridge"],
-      "coordinates": {
-        "latitude": 48.85661,
-        "longitude": 2.351499
-      },
-      "user": {
-        "id": "7",
-        "name": "Михаил Иванов",
-        "email": "mihail@example.com",
-        "avatar": "https://avatars.example.com/mihail.jpg",
-        "password": "password901",
-        "type": "обычный"
-      }
+    "previewImage": [
+      "https://example.com/preview1.jpg",
+      "https://example.com/preview2.jpg",
+      "https://example.com/preview3.jpg",
+      "https://example.com/preview4.jpg",
+      "https://example.com/preview5.jpg"
+    ],
+    "images": [
+      [
+        "https://example.com/photo1.jpg",
+        "https://example.com/photo2.jpg"
+      ],
+      [],
+      [
+        "https://example.com/photo3.jpg"
+      ],
+      [
+        "https://example.com/photo4.jpg",
+        "https://example.com/photo5.jpg"
+      ],
+      [
+        "https://example.com/photo6.jpg"
+      ]
+    ],
+    "premium": [
+      true,
+      false
+    ],
+    "favorite": [
+      true,
+      false
+    ],
+    "rating": [
+      4.5,
+      4,
+      5,
+      3.2,
+      1
+    ],
+    "type": [
+      "apartment",
+      "house",
+      "room",
+      "hotel"
+    ],
+    "rooms": [
+      3,
+      1,
+      8,
+      4,
+      6
+    ],
+    "guests": [
+      5,
+      1,
+      10,
+      3,
+      7
+    ],
+    "price": [
+      15000,
+      100000,
+      100,
+      7000,
+      99999
+    ],
+    "features": [
+      [
+        "Breakfast"
+      ],
+      [
+        "Air conditioning",
+        "Laptop friendly workspace",
+        "Baby seat"
+      ],
+      [
+        "Washer",
+        "Towels"
+      ],
+      [
+        "Fridge"
+      ]
+    ],
+    "user": {
+      "id": [
+        "1",
+        "12",
+        "123",
+        "1234",
+        "12345"
+      ],
+      "name": [
+        "Иван Иванов",
+        "Мария Леонтьева",
+        "Петр Петрович",
+        "Рыбка Коя"
+      ],
+      "email": [
+        "ivan@example.com",
+        "ma@example.com",
+        "pe@example.com",
+        "koua@example.com"
+      ],
+      "avatar": [
+        "https://avatars.example.com/ivan.jpg",
+        "",
+        "https://avatars.example.com/pe.jpg"
+      ],
+      "password": [
+        "password123",
+        "password1",
+        "password12",
+        "password23",
+        "password1234"
+      ],
+      "type": [
+        "обычный",
+        "pro"
+      ]
     }
-  ]
+  }
 }
