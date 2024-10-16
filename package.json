@@ -16,19 +16,28 @@
     "clean": "rimraf dist",
     "ts": "ts-node",
     "cli": "ts-node src/cli.ts",
-    "mock-server": "json-server --watch mocks/mock-server-data.json --port 3000"
+    "mock-server": "json-server --watch mocks/mock-server-data.json --port 3000",
+    "log:pretty": "ts-node src/main.ts | npx pino-pretty"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
+    "@types/convict": "^6.1.6",
+    "@types/convict-format-with-validator": "^6.0.5",
     "@types/node": "^18.19.54",
     "@typescript-eslint/eslint-plugin": "6.7.0",
     "@typescript-eslint/parser": "6.7.0",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.49.0",
     "eslint-config-htmlacademy": "9.1.1",
     "got": "^14.4.2",
     "json-server": "^1.0.0-beta.3",
+    "pino-pretty": "^11.3.0",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "5.0.1",
     "ts-node": "^10.9.2",
+    "tslib": "^2.8.0",
     "typescript": "^5.6.2"
   },
   "type": "module",
@@ -38,7 +47,9 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "inversify": "^6.0.2",
+    "pino": "^9.5.0"
   },
   "compilerOptions": {
     "resolveJsonModule": true,
@@ -47,6 +58,8 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "strict": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }
