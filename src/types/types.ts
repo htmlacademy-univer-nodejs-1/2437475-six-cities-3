@@ -13,7 +13,7 @@ export interface RentOffer {
     guests: number;
     price: number;
     features: string[];
-    coordinates: 
+    coordinates:
     {
         latitude: number;
         longitude: number;
