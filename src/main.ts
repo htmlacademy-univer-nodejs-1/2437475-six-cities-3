@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { Application } from '../application.js';
-import { diContainer } from '../container.js';
+import { Application } from './rest/application.js';
+import { diContainer } from './rest/container.js';
 
 
 diContainer.load();

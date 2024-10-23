@@ -5,9 +5,9 @@ import fs from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { RentOffer } from '../types.js';
-import { User } from '../types.js';
-import { RentOfferWithUser } from '../types.js';
+import { RentOffer } from './types/types.js';
+import { User } from './types/types.js';
+import { RentOfferWithUser } from './types/types.js';
 
 /* npm run cli -- help
 npm run cli -- generate 30 ./mocks/test_data.tsv http://localhost:3000/randomData

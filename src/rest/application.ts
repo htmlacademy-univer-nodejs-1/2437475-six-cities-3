@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import config from './load-env.js';
-import logger from './src/logger.js';
+import logger from '../logger/logger.js';
 
 @injectable()
 export class Application {
