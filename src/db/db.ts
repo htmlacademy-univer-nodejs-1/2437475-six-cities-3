@@ -9,7 +9,6 @@ async function connectToDatabase() {
     logger.info('Connect db success in ', dbUri);
   } catch (error) {
     logger.error('Error connect DataBase', error);
-    process.exit(1);
   }
 }
 

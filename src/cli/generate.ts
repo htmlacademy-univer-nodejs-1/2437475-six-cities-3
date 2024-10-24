@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import { RentOfferWithUser } from '../types/types.js';
-import { createWriteStream } from 'fs';
+import { createWriteStream } from 'node:fs';
 
 interface City {
   latitude: number;

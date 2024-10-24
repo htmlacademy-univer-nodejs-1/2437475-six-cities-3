@@ -1,10 +1,10 @@
-import chalk from "chalk";
-import { createReadStream } from "fs";
-import { RentOfferWithUser, RentOffer, User } from "../types/types.js";
-import connectToDatabase from "../db/db.js";
-import RentOfferModel from "../db/models/rent-offer.js";
-import mongoose from "mongoose";
-import logger from "../logger/logger.js";
+import chalk from 'chalk';
+import { createReadStream } from 'node:fs';
+import { RentOfferWithUser, RentOffer, User } from '../types/types.js';
+import connectToDatabase from '../db/db.js';
+import RentOfferModel from '../db/models/rent-offer.js';
+import mongoose from 'mongoose';
+import logger from '../logger/logger.js';
 
 export async function importData(inputFile: string): Promise<void> {
   try {

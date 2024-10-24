@@ -1,5 +1,5 @@
-import { RentOffer } from "../../types/types.js";
-import RentOfferModel from "../models/rent-offer.js";
+import { RentOffer } from '../../types/types.js';
+import RentOfferModel from '../models/rent-offer.js';
 
 class RentOfferService {
   async createRentOffer(data: Partial<RentOffer>): Promise<RentOffer> {
