@@ -1,4 +1,7 @@
-export interface RentOffer {
+import { Document } from 'mongoose';
+
+export interface RentOffer extends Document {
+    _id: string;
     name: string;
     description: string;
     publishedAt: Date;
@@ -20,8 +23,8 @@ export interface RentOffer {
     };
 }
 
-export interface User {
-    id: string;
+export interface User extends Document {
+    _id: string;
     name: string;
     email: string;
     avatar?: string;
