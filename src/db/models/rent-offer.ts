@@ -27,7 +27,7 @@ const RentOfferSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
-    publishedAt: { type: Date, required: true },
+    publishedAt: { type: Date, default: Date.now },
     city: { type: String, required: true },
     previewImage: { type: String, required: true },
     images: { type: [String], required: true },
@@ -43,6 +43,7 @@ const RentOfferSchema: Schema = new Schema(
       latitude: { type: Number, required: true },
       longitude: { type: Number, required: true },
     },
+    commentCount: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: true,

@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 
 export interface RentOffer extends Document {
     _id: string;
@@ -34,4 +34,22 @@ export interface User extends Document {
 
 export interface RentOfferWithUser extends RentOffer {
     user: User;
+}
+
+export interface Comment extends Document {
+    _id: string;
+    text: string;
+    rating: number;
+    author: Schema.Types.ObjectId;
+    rentOffer: Schema.Types.ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Favorite extends Document {
+    _id: string;
+    user: Schema.Types.ObjectId;
+    rentOffer: Schema.Types.ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
 }
