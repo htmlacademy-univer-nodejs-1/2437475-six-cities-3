@@ -20,6 +20,7 @@
     "log:pretty": "ts-node src/main.ts | npx pino-pretty"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/commander": "^2.12.2",
     "@types/convict": "^6.1.6",
     "@types/convict-format-with-validator": "^6.0.5",
@@ -47,6 +48,7 @@
   },
   "dependencies": {
     "@typegoose/typegoose": "^12.8.0",
+    "bcrypt": "^5.1.1",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "inversify": "^6.0.2",
