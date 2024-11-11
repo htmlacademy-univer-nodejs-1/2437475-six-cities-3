@@ -1,0 +1,320 @@
+openapi: 3.0.0
+info:
+  title: Rental Service API
+  version: 1.0.0
+  description: API documentation for a rental service application.
+
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      description: Allows an anonymous client to create a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Validation error
+
+  /users/login:
+    post:
+      summary: User login
+      description: Allows a user to log into the application.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  description: User's password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful, returns auth token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Invalid email or password
+
+  /rent-offers:
+    get:
+      summary: List rental offers
+      description: Retrieve up to 60 rental offers, sorted by publication date.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 60
+      responses:
+        '200':
+          description: A list of rental offers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RentOffer'
+
+    post:
+      summary: Create a new rental offer
+      description: Allows an authorized client to create a rental offer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentOffer'
+      responses:
+        '201':
+          description: Rental offer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentOfferResponse'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized error
+
+  /comments:
+    get:
+      summary: List comments for a rental offer
+      description: Retrieve up to 50 latest comments for a specific rental offer.
+      parameters:
+        - name: offerId
+          in: query
+          schema:
+            type: string
+            description: ID of the rental offer
+      responses:
+        '200':
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+    post:
+      summary: Add a new comment
+      description: Allows an authorized client to add a comment to a rental offer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentResponse'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        email:
+          type: string
+          format: email
+        avatar:
+          type: string
+          format: binary
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+        userType:
+          type: string
+          enum: [normal, pro]
+      required:
+        - name
+        - email
+        - password
+        - userType
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        userType:
+          type: string
+
+    RentOffer:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 10
+          maxLength: 100
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+        publishDate:
+          type: string
+          format: date-time
+        city:
+          type: string
+          enum: [Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf]
+        previewImage:
+          type: string
+          format: uri
+        photos:
+          type: array
+          items:
+            type: string
+            format: uri
+          minItems: 6
+          maxItems: 6
+        isPremium:
+          type: boolean
+        isFavorite:
+          type: boolean
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          multipleOf: 0.1
+        propertyType:
+          type: string
+          enum: [apartment, house, room, hotel]
+        rooms:
+          type: integer
+          minimum: 1
+          maximum: 8
+        guests:
+          type: integer
+          minimum: 1
+          maximum: 10
+        price:
+          type: integer
+          minimum: 100
+          maximum: 100000
+        amenities:
+          type: array
+          items:
+            type: string
+            enum: [Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Fridge]
+        authorId:
+          type: string
+      required:
+        - name
+        - description
+        - publishDate
+        - city
+        - previewImage
+        - photos
+        - isPremium
+        - isFavorite
+        - rating
+        - propertyType
+        - rooms
+        - guests
+        - price
+        - amenities
+        - authorId
+
+    RentOfferResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        publishDate:
+          type: string
+          format: date-time
+        city:
+          type: string
+        previewImage:
+          type: string
+          format: uri
+        rating:
+          type: number
+        isPremium:
+          type: boolean
+        isFavorite:
+          type: boolean
+
+    Comment:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 5
+          maxLength: 1024
+        publishDate:
+          type: string
+          format: date-time
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        authorId:
+          type: string
+      required:
+        - text
+        - rating
+        - authorId
+
+    CommentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        publishDate:
+          type: string
+          format: date-time
+        rating:
+          type: number
+        authorId:
+          type: string
