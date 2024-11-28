@@ -67,7 +67,7 @@ async function main(): Promise<void> {
         break;
       }
       default:
-        console.error(chalk.red('Используйте --help для просмотра списка команд.'));
+        console.error(chalk.red('Используйте -- help для просмотра списка команд.'));
     }
   } catch (error) {
     console.error(chalk.red(`Ошибка при чтении package.json: ${(error as Error).message}`));
