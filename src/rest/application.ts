@@ -7,6 +7,7 @@ import connectToDatabase from '../db/db.js';
 // import RentOfferModel from '../db/models/rent-offer.js';
 import UserController from './middleware/controllers/user-controller.js';
 import FavoriteController from './middleware/controllers/favorite-controller.js';
+import CommentController from './middleware/controllers/comment-controller.js';
 
 /*
 в cmd, в этой папке:
@@ -67,6 +68,7 @@ export class Application {
     this.app.use('/api/rent-offers', RentOfferController);
     this.app.use('/api/users', UserController);
     this.app.use('/api/favorites', FavoriteController);
+    this.app.use('/api/comments', CommentController);
   }
 
   private registerExceptionFilters(): void {
