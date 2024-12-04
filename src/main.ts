@@ -21,6 +21,10 @@ try {
   //   }
   // });
   // await mongoose.disconnect();
-} catch (err: any) {
-  logger.error(`Failed to initialize the application: ${err.message}`);
+} catch (err) {
+  if (err instanceof Error) {
+    logger.error(`Failed to initialize the application: ${err.message}`);
+  } else {
+    logger.error(`Unknown error during initialization: ${JSON.stringify(err)}`);
+  }
 }
