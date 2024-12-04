@@ -2,10 +2,11 @@ import UserModel from '../models/user.js';
 import { User } from '../../types/types.js';
 import { CreateUserDTO, LoginDTO } from '../dto/user.dto.js';
 import bcrypt from 'bcrypt';
+import { EntityService } from './entity-service.js';
 
 const SALT_ROUNDS = 10;
 
-class UserService {
+class UserService implements EntityService {
   async createUser(data: CreateUserDTO): Promise<User> {
     const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
     const newUser = await UserModel.create({
@@ -15,12 +16,20 @@ class UserService {
     return newUser as User;
   }
 
+  async findById(id: string): Promise<User | null> {
+    return this.findUserById(id);
+  }
+
   async findUserById(id: string): Promise<User | null> {
     return UserModel.findById(id).exec() as Promise<User | null>;
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
     return UserModel.findOne({ email }).exec() as Promise<User | null>;
+  }
+
+  async updateUserAvatar(userId: string, avatarPath: string): Promise<any> {
+    return UserModel.findByIdAndUpdate(userId, { avatar: avatarPath }, { new: true }).exec();
   }
 
   async authenticateUser(data: LoginDTO): Promise<User | null> {
