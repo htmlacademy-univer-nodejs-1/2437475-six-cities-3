@@ -76,6 +76,7 @@ class UserController extends Controller {
       this.handleSuccess(res, { avatarPath });
     } catch (error) {
       next(error);
+      return;
     }
   }
 

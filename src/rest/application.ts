@@ -8,8 +8,8 @@ import connectToDatabase from '../db/db.js';
 import UserController from './middleware/controllers/user-controller.js';
 import FavoriteController from './middleware/controllers/favorite-controller.js';
 import CommentController from './middleware/controllers/comment-controller.js';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 
 /*
 в cmd, в этой папке:

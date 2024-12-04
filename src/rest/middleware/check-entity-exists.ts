@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { EntityService } from '../../db/services/entity-service.js';
 
-export const checkEntityExists = (service: EntityService, idParam: string) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+export const checkEntityExists = (service: EntityService, idParam: string) =>
+  async (req: Request, res: Response, next: NextFunction) => {
     const entityId = req.params[idParam];
 
     if (!entityId) {
@@ -19,8 +19,9 @@ export const checkEntityExists = (service: EntityService, idParam: string) => {
 
       res.locals.entity = entity;
       next();
+      return;
     } catch (error) {
       next(error);
+      return;
     }
   };
-};
