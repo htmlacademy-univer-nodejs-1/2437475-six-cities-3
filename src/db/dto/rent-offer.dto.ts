@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsNumber, IsArray, IsEnum, IsDate, ValidateNested, IsObject, IsOptional } from 'class-validator';
+import { IsString, IsBoolean, IsNumber, IsArray, IsEnum, ValidateNested, IsObject, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CoordinatesDTO {
@@ -16,10 +16,6 @@ export class CreateRentOfferDTO {
   @IsString()
     description!: string;
 
-  @IsDate()
-  @Type(() => Date)
-    publishedAt!: Date;
-
   @IsString()
     city!: string;
 
@@ -32,12 +28,6 @@ export class CreateRentOfferDTO {
 
   @IsBoolean()
     premium!: boolean;
-
-  @IsBoolean()
-    favorite!: boolean;
-
-  @IsNumber()
-    rating!: number;
 
   @IsEnum(['apartment', 'house', 'room', 'hotel'])
     type!: 'apartment' | 'house' | 'room' | 'hotel';
@@ -73,10 +63,6 @@ export class UpdateRentOfferDTO {
   @IsBoolean()
   @IsOptional()
     premium?: boolean;
-
-  @IsBoolean()
-  @IsOptional()
-    favorite?: boolean;
 
   @IsNumber()
   @IsOptional()

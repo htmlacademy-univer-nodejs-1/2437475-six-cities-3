@@ -21,6 +21,7 @@ export interface RentOffer extends Document {
         latitude: number;
         longitude: number;
     };
+    user: Schema.Types.ObjectId;
 }
 
 export interface User extends Document {
@@ -33,7 +34,7 @@ export interface User extends Document {
 }
 
 export interface RentOfferWithUser extends RentOffer {
-    user: User;
+    rentOfferUser: User;
 }
 
 export interface Comment extends Document {

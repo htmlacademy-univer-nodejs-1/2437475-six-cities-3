@@ -66,7 +66,7 @@ function generateRandomRentOfferWithUser(): RentOfferWithUser {
     guests: getRandomElement(data.guests),
     price: Math.floor(Math.random() * 90000 + 100),
     features: getRandomElement(data.features),
-    user: {
+    rentOfferUser: {
       _id: ' ',
       name: getRandomElement(data.user.name),
       email: getRandomElement(data.user.email),
@@ -113,12 +113,12 @@ export async function generateTestData(n: number, filepath: string, url: string)
     offer.guests.toString(),
     offer.price.toString(),
     offer.features.join(';'),
-    offer.user.id,
-    offer.user.name,
-    offer.user.email,
-    offer.user.avatar || '',
-    offer.user.password,
-    offer.user.type,
+    offer.rentOfferUser.id,
+    offer.rentOfferUser.name,
+    offer.rentOfferUser.email,
+    offer.rentOfferUser.avatar || '',
+    offer.rentOfferUser.password,
+    offer.rentOfferUser.type,
     offer.coordinates.latitude.toString(),
     offer.coordinates.longitude.toString()
   ].join('\t')).join('\n');

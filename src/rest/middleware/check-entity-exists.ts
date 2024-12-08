@@ -19,9 +19,7 @@ export const checkEntityExists = (service: EntityService, idParam: string) =>
 
       res.locals.entity = entity;
       next();
-      return;
     } catch (error) {
       next(error);
-      return;
     }
   };

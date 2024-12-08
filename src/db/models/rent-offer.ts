@@ -21,6 +21,7 @@ interface RentOffer extends Document {
   };
   createdAt: Date;
   updatedAt: Date;
+  user: Schema.Types.ObjectId;
 }
 
 const RentOfferSchema: Schema = new Schema(
@@ -44,6 +45,7 @@ const RentOfferSchema: Schema = new Schema(
       longitude: { type: Number, required: true },
     },
     commentCount: { type: Number, required: true, default: 0 },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   {
     timestamps: true,
