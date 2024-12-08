@@ -93,7 +93,7 @@ function parseTSVRow(row: string): RentOfferWithUser {
     guests: Number(guests),
     price: Number(price),
     features: features.split(';'),
-    user: {
+    rentOfferUser: {
       id: userId,
       name: userName,
       email: userEmail,

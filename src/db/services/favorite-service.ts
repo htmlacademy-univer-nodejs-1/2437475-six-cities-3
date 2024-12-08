@@ -19,6 +19,10 @@ class FavoriteService {
   async getFavorites(userId: string): Promise<Favorite[]> {
     return FavoriteModel.find({ user: userId }).populate('rentOffer').exec() as Promise<Favorite[]>;
   }
+
+  async findFavorite(userId: string, rentOfferId: string): Promise<Favorite | null> {
+    return FavoriteModel.findOne({ user: userId, rentOffer: rentOfferId }).exec() as Promise<Favorite | null>;
+  }
 }
 
 export default new FavoriteService();

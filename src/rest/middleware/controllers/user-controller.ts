@@ -8,6 +8,7 @@ import { validateDTO } from '../validate-dto-middleware.js';
 import userService from '../../../db/services/user-service.js';
 import { checkEntityExists } from '../check-entity-exists.js';
 import { uploadAvatar } from '../upload-avatar-middleware.js';
+import { generateToken } from '../../jwt-utils.js';
 
 class UserController extends Controller {
   public router: Router;
@@ -76,7 +77,6 @@ class UserController extends Controller {
       this.handleSuccess(res, { avatarPath });
     } catch (error) {
       next(error);
-      return;
     }
   }
 
@@ -117,11 +117,17 @@ class UserController extends Controller {
 
   private async authenticateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const authenticatedUser = await UserService.authenticateUser(req.body);
+      const { email, password } = req.body;
+
+      const authenticatedUser = await UserService.authenticateUser({ email, password });
       if (!authenticatedUser) {
-        return next(new Error('Invalid credentials'));
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
       }
-      this.handleSuccess(res, authenticatedUser);
+
+      const token = await generateToken({ id: authenticatedUser.id, email: authenticatedUser.email });
+
+      this.handleSuccess(res, { token });
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

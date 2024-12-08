@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 
 export interface RentOfferEntity extends Document {
   name: string;
@@ -21,4 +21,5 @@ export interface RentOfferEntity extends Document {
   };
   createdAt: Date;
   updatedAt: Date;
+  user: Schema.Types.ObjectId;
 }

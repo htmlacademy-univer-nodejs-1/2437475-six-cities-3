@@ -24,7 +24,7 @@ class CommentController extends Controller {
     });
 
     this.addRoute({
-      path: '/:rentOfferId',
+      path: '/:id',
       method: 'get',
       handler: asyncHandler(this.getCommentsForRentOffer.bind(this)),
       middlewares: [ValidateObjectIdMiddleware],

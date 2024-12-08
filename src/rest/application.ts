@@ -15,6 +15,15 @@ import fs from 'node:fs';
 в cmd, в этой папке:
 curl -X POST http://localhost:3000/api/users -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"password123\",\"name\":\"Test User\",\"type\":\"pro\"}"
 curl -X GET http://localhost:3000/api/users/6748af592282ed9dc2c19e2f
+
+Чтобы Войти (и получить токен):
+curl -X POST http://localhost:3000/api/users/login -H "Content-Type: application/json" -d "{\"email\":\"testtesttest1@example.com\",\"password\":\"test123test\"}"
+
+Зарегистрировать фаворит (Аналогично с DELETE его снять):
+curl -X POST http://localhost:3000/api/favorites -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d "{\"user\":\"675559ad7644d955eb55f334\",\"rentOffer\":\"67489fe569fc91a9a0259bfb\"}"
+
+Узнать фавориты пользователя:
+curl -X GET http://localhost:3000/api/favorites/675559ad7644d955eb55f334
  */
 
 const ensureUploadsDir = () => {

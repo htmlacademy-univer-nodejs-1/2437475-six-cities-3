@@ -7,6 +7,7 @@ import { FavoriteDTO } from '../../../db/dto/favorite.dto.js';
 import { validateDTO } from '../validate-dto-middleware.js';
 import { checkEntityExists } from '../check-entity-exists.js';
 import favoriteService from '../../../db/services/favorite-service.js';
+import { authenticate } from '../auth-middleware.js';
 
 class FavoriteController extends Controller {
   public router: Router;
@@ -22,18 +23,18 @@ class FavoriteController extends Controller {
       path: '/',
       method: 'post',
       handler: asyncHandler(this.addFavorite.bind(this)),
-      middlewares: [validateDTO(FavoriteDTO)],
+      middlewares: [authenticate, validateDTO(FavoriteDTO)],
     });
 
     this.addRoute({
       path: '/',
       method: 'delete',
       handler: asyncHandler(this.removeFavorite.bind(this)),
-      middlewares: [validateDTO(FavoriteDTO)],
+      middlewares: [authenticate, validateDTO(FavoriteDTO)],
     });
 
     this.addRoute({
-      path: '/:userId',
+      path: '/:id',
       method: 'get',
       handler: asyncHandler(this.getFavorites.bind(this)),
       middlewares: [ValidateObjectIdMiddleware, checkEntityExists(favoriteService, 'id')],
@@ -42,7 +43,9 @@ class FavoriteController extends Controller {
 
   private async addFavorite(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const favorite = await FavoriteService.addFavorite(req.body);
+      const userId = res.locals.user.id;
+      const { rentOffer } = req.body;
+      const favorite = await FavoriteService.addFavorite({ user: userId, rentOffer });
       this.handleCreated(res, favorite);
     } catch (error) {
       if (error instanceof Error) {
@@ -53,7 +56,15 @@ class FavoriteController extends Controller {
 
   private async removeFavorite(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await FavoriteService.removeFavorite(req.body);
+      const userId = res.locals.user.id;
+      const { rentOffer } = req.body;
+
+      const favorite = await FavoriteService.findFavorite(userId, rentOffer);
+      if (!favorite) {
+        return next(new Error('Favorite not found or does not belong to you'));
+      }
+
+      await FavoriteService.removeFavorite({ user: userId, rentOffer });
       this.handleSuccess(res);
     } catch (error) {
       if (error instanceof Error) {
