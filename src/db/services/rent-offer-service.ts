@@ -2,8 +2,9 @@ import { RentOffer } from '../../types/types.js';
 import RentOfferModel from '../models/rent-offer.js';
 import CommentModel from '../models/comment.js';
 import { CreateRentOfferDTO, UpdateRentOfferDTO } from '../dto/rent-offer.dto.js';
+import { EntityService } from './entity-service.js';
 
-class RentOfferService {
+class RentOfferService implements EntityService {
   async createRentOffer(data: CreateRentOfferDTO): Promise<RentOffer> {
     const newRentOffer = await RentOfferModel.create(data);
     return newRentOffer as RentOffer;
@@ -11,6 +12,10 @@ class RentOfferService {
 
   async findRentOfferById(id: string): Promise<RentOffer | null> {
     return RentOfferModel.findById(id).exec() as Promise<RentOffer | null>;
+  }
+
+  async findById(id: string): Promise<RentOffer | null> {
+    return this.findRentOfferById(id);
   }
 
   async findAllRentOffers(limit: number = 60): Promise<RentOffer[]> {

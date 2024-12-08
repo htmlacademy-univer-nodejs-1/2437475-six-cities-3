@@ -5,6 +5,8 @@ import { Controller } from './controller.js';
 import { ValidateObjectIdMiddleware } from '../validate-object-middleware.js';
 import { FavoriteDTO } from '../../../db/dto/favorite.dto.js';
 import { validateDTO } from '../validate-dto-middleware.js';
+import { checkEntityExists } from '../check-entity-exists.js';
+import favoriteService from '../../../db/services/favorite-service.js';
 
 class FavoriteController extends Controller {
   public router: Router;
@@ -34,7 +36,7 @@ class FavoriteController extends Controller {
       path: '/:userId',
       method: 'get',
       handler: asyncHandler(this.getFavorites.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware],
+      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(favoriteService, 'id')],
     });
   }
 
@@ -60,10 +62,9 @@ class FavoriteController extends Controller {
     }
   }
 
-  private async getFavorites(req: Request<{ userId: string }>, res: Response, next: NextFunction): Promise<void> {
+  private async getFavorites(_req: Request<{ userId: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const favorites = await FavoriteService.getFavorites(req.params.userId);
-      this.handleSuccess(res, favorites);
+      this.handleSuccess(res, res.locals.entity);
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

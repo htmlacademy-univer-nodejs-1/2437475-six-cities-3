@@ -5,6 +5,9 @@ import { Controller } from './controller.js';
 import { ValidateObjectIdMiddleware } from '../validate-object-middleware.js';
 import { CreateUserDTO, LoginDTO } from '../../../db/dto/user.dto.js';
 import { validateDTO } from '../validate-dto-middleware.js';
+import userService from '../../../db/services/user-service.js';
+import { checkEntityExists } from '../check-entity-exists.js';
+import { uploadAvatar } from '../upload-avatar-middleware.js';
 
 class UserController extends Controller {
   public router: Router;
@@ -27,7 +30,7 @@ class UserController extends Controller {
       path: '/:id',
       method: 'get',
       handler: asyncHandler(this.getUserById.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware],
+      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(userService, 'id')],
     });
 
     this.addRoute({
@@ -43,6 +46,38 @@ class UserController extends Controller {
       handler: asyncHandler(this.getUserByEmail.bind(this)),
       middlewares: [],
     });
+
+    this.addRoute({
+      path: '/:id/avatar',
+      method: 'post',
+      handler: asyncHandler(this.uploadUserAvatar.bind(this)),
+      middlewares: [uploadAvatar],
+    });
+  }
+
+  private async uploadUserAvatar(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.params.id;
+
+      if (!req.file) {
+        res.status(400).json({ error: 'Avatar file is required.' });
+        return;
+      }
+
+      const avatarPath = `/uploads/avatars/${req.file.filename}`;
+
+      const updatedUser = await UserService.updateUserAvatar(userId, avatarPath);
+
+      if (!updatedUser) {
+        res.status(404).json({ error: 'User not found.' });
+        return;
+      }
+
+      this.handleSuccess(res, { avatarPath });
+    } catch (error) {
+      next(error);
+      return;
+    }
   }
 
   private async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -56,13 +91,9 @@ class UserController extends Controller {
     }
   }
 
-  private async getUserById(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
+  private async getUserById(_req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const user = await UserService.findUserById(req.params.id);
-      if (!user) {
-        return next(new Error('User not found'));
-      }
-      this.handleSuccess(res, user);
+      this.handleSuccess(res, res.locals.entity);
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

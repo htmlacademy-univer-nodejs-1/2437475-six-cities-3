@@ -5,6 +5,7 @@ import { Controller } from './controller.js';
 import { ValidateObjectIdMiddleware } from '../validate-object-middleware.js';
 import { CreateRentOfferDTO, UpdateRentOfferDTO } from '../../../db/dto/rent-offer.dto.js';
 import { validateDTO } from '../validate-dto-middleware.js';
+import { checkEntityExists } from '../check-entity-exists.js';
 
 class RentOfferController extends Controller {
   public router: Router;
@@ -34,21 +35,21 @@ class RentOfferController extends Controller {
       path: '/:id',
       method: 'get',
       handler: asyncHandler(this.getRentOfferById.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware],
+      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(RentOfferService, 'id')],
     });
 
     this.addRoute({
       path: '/:id',
       method: 'put',
       handler: asyncHandler(this.updateRentOffer.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware, validateDTO(UpdateRentOfferDTO)],
+      middlewares: [ValidateObjectIdMiddleware, validateDTO(UpdateRentOfferDTO), checkEntityExists(RentOfferService, 'id')],
     });
 
     this.addRoute({
       path: '/:id',
       method: 'delete',
       handler: asyncHandler(this.deleteRentOffer.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware],
+      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(RentOfferService, 'id')],
     });
   }
 
@@ -68,13 +69,9 @@ class RentOfferController extends Controller {
     this.handleSuccess(res, rentOffers);
   }
 
-  private async getRentOfferById(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
+  private async getRentOfferById(_req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const rentOffer = await RentOfferService.findRentOfferById(req.params.id);
-      if (!rentOffer) {
-        return next(new Error('RentOffer not found'));
-      }
-      this.handleSuccess(res, rentOffer);
+      this.handleSuccess(res, res.locals.entity);
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

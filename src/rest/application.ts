@@ -8,12 +8,25 @@ import connectToDatabase from '../db/db.js';
 import UserController from './middleware/controllers/user-controller.js';
 import FavoriteController from './middleware/controllers/favorite-controller.js';
 import CommentController from './middleware/controllers/comment-controller.js';
+import path from 'node:path';
+import fs from 'node:fs';
 
 /*
 в cmd, в этой папке:
 curl -X POST http://localhost:3000/api/users -H "Content-Type: application/json" -d "{\"email\":\"testuser@example.com\",\"password\":\"password123\",\"name\":\"Test User\",\"type\":\"pro\"}"
 curl -X GET http://localhost:3000/api/users/6748af592282ed9dc2c19e2f
  */
+
+const ensureUploadsDir = () => {
+  const baseDir = process.env.UPLOADS_DIR || './uploads';
+  const avatarsDir = path.join(baseDir, 'avatars');
+
+  [baseDir, avatarsDir].forEach((dir) => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  });
+};
 
 @injectable()
 export class Application {
@@ -29,6 +42,8 @@ export class Application {
       logger.warn('An attempt to initialize an already initialized application');
       return;
     }
+
+    ensureUploadsDir();
 
     await connectToDatabase();
 
@@ -62,6 +77,10 @@ export class Application {
 
   private registerMiddlewares(): void {
     this.app.use(express.json());
+
+    const uploadsDir = process.env.UPLOADS_DIR || './uploads';
+    this.app.use('/uploads', express.static(path.resolve(uploadsDir)));
+    logger.info(`Static files served from ${uploadsDir}`);
   }
 
   private registerRoutes(): void {

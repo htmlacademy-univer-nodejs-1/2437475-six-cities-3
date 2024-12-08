@@ -12,6 +12,10 @@ class FavoriteService {
     await FavoriteModel.findOneAndDelete(data).exec();
   }
 
+  async findById(id: string): Promise<Favorite[] | null> {
+    return this.getFavorites(id);
+  }
+
   async getFavorites(userId: string): Promise<Favorite[]> {
     return FavoriteModel.find({ user: userId }).populate('rentOffer').exec() as Promise<Favorite[]>;
   }
