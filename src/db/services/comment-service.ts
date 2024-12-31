@@ -14,7 +14,16 @@ class CommentService {
   }
 
   async getCommentsForRentOffer(rentOfferId: string, limit: number = 50): Promise<Comment[]> {
-    return CommentModel.find({ rentOffer: rentOfferId }).limit(limit).sort({ createdAt: -1 }).exec() as Promise<Comment[]>;
+    return CommentModel.find({ rentOffer: rentOfferId }).limit(limit).sort({ publishedAt: -1 }).exec() as Promise<Comment[]>;
+  }
+
+  async deleteCommentsForRentOffer(rentOfferId: string): Promise<{ deletedCount?: number }> {
+    const result = await CommentModel.deleteMany({ rentOffer: rentOfferId }).exec();
+
+    await RentOfferService.calculateRating(rentOfferId);
+    await RentOfferService.updateCommentCount(rentOfferId);
+
+    return { deletedCount: result.deletedCount };
   }
 }
 

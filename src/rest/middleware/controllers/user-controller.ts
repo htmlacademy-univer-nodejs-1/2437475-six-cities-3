@@ -9,6 +9,7 @@ import userService from '../../../db/services/user-service.js';
 import { checkEntityExists } from '../check-entity-exists.js';
 import { uploadAvatar } from '../upload-avatar-middleware.js';
 import { generateToken } from '../../jwt-utils.js';
+import { authenticate } from '../auth-middleware.js';
 
 class UserController extends Controller {
   public router: Router;
@@ -28,10 +29,10 @@ class UserController extends Controller {
     });
 
     this.addRoute({
-      path: '/:id',
+      path: '/status',
       method: 'get',
-      handler: asyncHandler(this.getUserById.bind(this)),
-      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(userService, 'id')],
+      handler: asyncHandler(this.checkUserStatus.bind(this)),
+      middlewares: [authenticate],
     });
 
     this.addRoute({
@@ -46,6 +47,13 @@ class UserController extends Controller {
       method: 'get',
       handler: asyncHandler(this.getUserByEmail.bind(this)),
       middlewares: [],
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: 'get',
+      handler: asyncHandler(this.getUserById.bind(this)),
+      middlewares: [ValidateObjectIdMiddleware, checkEntityExists(userService, 'id')],
     });
 
     this.addRoute({
@@ -76,12 +84,17 @@ class UserController extends Controller {
 
       this.handleSuccess(res, { avatarPath });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
   private async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const userId = res.locals.user?.id;
+      if (userId) {
+        res.status(401).json({ error: 'Authorized' });
+        return;
+      }
       const newUser = await UserService.createUser(req.body);
       this.handleCreated(res, newUser);
     } catch (error) {
@@ -128,6 +141,37 @@ class UserController extends Controller {
       const token = await generateToken({ id: authenticatedUser.id, email: authenticatedUser.email });
 
       this.handleSuccess(res, { token });
+    } catch (error) {
+      if (error instanceof Error) {
+        this.handleError(next, error);
+      }
+    }
+  }
+
+  private async checkUserStatus(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userPayload = res.locals.user;
+
+      if (!userPayload || !userPayload.id) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const user = await UserService.findUserById(userPayload.id);
+      if (!user) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const userInfo = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        type: user.type,
+      };
+
+      res.status(200).json({ user: userInfo });
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

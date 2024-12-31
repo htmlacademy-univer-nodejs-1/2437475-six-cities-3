@@ -5,7 +5,8 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Authorization token is required' });
+    res.status(401).json({ error: 'Authorization token is required' });
+    return;
   }
 
   const token = authHeader.split(' ')[1];
@@ -13,7 +14,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   try {
     const payload = await verifyToken(token);
     res.locals.user = payload;
-    next();
+    return next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid or expired token' });
   }

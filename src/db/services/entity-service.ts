@@ -1,3 +1,3 @@
-export interface EntityService {
-  findById(id: string): Promise<any>;
+export interface EntityService<T> {
+  findById(id: string): Promise<T | null>;
 }

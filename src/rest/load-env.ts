@@ -8,6 +8,8 @@ if (!process.env.PORT || !process.env.DB_HOST || !process.env.SALT) {
   throw new Error('Необходимо установить все обязательные переменные окружения');
 }
 
+config.validate({ allowed: 'strict' });
+
 config.set('port', Number(process.env.PORT));
 config.set('dbHost', process.env.DB_HOST);
 config.set('salt', process.env.SALT);

@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsNumber, IsArray, IsEnum, ValidateNested, IsObject, IsOptional } from 'class-validator';
+import { IsString, IsBoolean, IsNumber, IsArray, IsEnum, ValidateNested, IsObject, IsOptional, MaxLength, MinLength, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CoordinatesDTO {
@@ -11,9 +11,13 @@ export class CoordinatesDTO {
 
 export class CreateRentOfferDTO {
   @IsString()
+  @MaxLength(100)
+  @MinLength(10)
     name!: string;
 
   @IsString()
+  @MaxLength(1024)
+  @MinLength(20)
     description!: string;
 
   @IsString()
@@ -33,12 +37,18 @@ export class CreateRentOfferDTO {
     type!: 'apartment' | 'house' | 'room' | 'hotel';
 
   @IsNumber()
+  @Max(8)
+  @Min(1)
     rooms!: number;
 
   @IsNumber()
+  @Max(10)
+  @Min(1)
     guests!: number;
 
   @IsNumber()
+  @Max(100000)
+  @Min(100)
     price!: number;
 
   @IsArray()
@@ -54,10 +64,14 @@ export class CreateRentOfferDTO {
 export class UpdateRentOfferDTO {
   @IsString()
   @IsOptional()
+  @MaxLength(100)
+  @MinLength(10)
     name?: string;
 
   @IsString()
   @IsOptional()
+  @MaxLength(1024)
+  @MinLength(20)
     description?: string;
 
   @IsBoolean()
@@ -66,6 +80,8 @@ export class UpdateRentOfferDTO {
 
   @IsNumber()
   @IsOptional()
+  @Max(100000)
+  @Min(100)
     price?: number;
 
   @IsObject()

@@ -17,3 +17,4 @@ export class CreateCommentDTO {
   @IsMongoId()
     rentOffer!: string;
 }
+

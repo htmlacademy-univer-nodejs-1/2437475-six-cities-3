@@ -4,7 +4,7 @@ import CommentModel from '../models/comment.js';
 import { CreateRentOfferDTO, UpdateRentOfferDTO } from '../dto/rent-offer.dto.js';
 import { EntityService } from './entity-service.js';
 
-class RentOfferService implements EntityService {
+class RentOfferService implements EntityService<RentOffer> {
   async createRentOffer(data: CreateRentOfferDTO): Promise<RentOffer> {
     const newRentOffer = await RentOfferModel.create(data);
     return newRentOffer as RentOffer;
@@ -19,7 +19,7 @@ class RentOfferService implements EntityService {
   }
 
   async findAllRentOffers(limit: number = 60): Promise<RentOffer[]> {
-    return RentOfferModel.find().limit(limit).exec() as Promise<RentOffer[]>;
+    return RentOfferModel.find().limit(limit).sort({ publishedAt: -1 }).exec() as Promise<RentOffer[]>;
   }
 
   async editRentOffer(id: string, data: UpdateRentOfferDTO): Promise<RentOffer | null> {
@@ -47,6 +47,13 @@ class RentOfferService implements EntityService {
   async updateCommentCount(rentOfferId: string): Promise<void> {
     const commentCount = await CommentModel.countDocuments({ rentOffer: rentOfferId });
     await RentOfferModel.findByIdAndUpdate(rentOfferId, { commentCount }).exec();
+  }
+
+  async findPremiumRentOffersByCity(city: string, limit: number = 3): Promise<RentOffer[]> {
+    return RentOfferModel.find({
+      premium: true,
+      city: { $regex: new RegExp(`^${city}$`, 'i') },
+    }).limit(limit) .sort({ publishedAt: -1 }).exec() as Promise<RentOffer[]>;
   }
 }
 

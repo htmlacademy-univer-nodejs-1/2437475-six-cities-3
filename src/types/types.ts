@@ -54,3 +54,7 @@ export interface Favorite extends Document {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type Constructor<T extends object> = {
+    new(): T;
+};

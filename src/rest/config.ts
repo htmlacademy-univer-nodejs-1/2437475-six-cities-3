@@ -1,7 +1,21 @@
 import convict from 'convict';
-import convictFormatWithValidator from 'convict-format-with-validator';
 
-convict.addFormat(convictFormatWithValidator.ipaddress);
+convict.addFormat({
+  name: 'mongodb-uri',
+  validate: function(val: string) {
+    if (typeof val !== 'string') {
+      throw new Error('must be a string');
+    }
+    if (!val.startsWith('mongodb://') && !val.startsWith('mongodb+srv://')) {
+      throw new Error('must start with mongodb:// or mongodb+srv://');
+    }
+    try {
+      new URL(val); // Проверка валидности URL
+    } catch (e) {
+      throw new Error('must be a valid URL');
+    }
+  }
+});
 
 const config = convict({
   env: {
@@ -18,8 +32,8 @@ const config = convict({
   },
   dbHost: {
     doc: 'Database host',
-    format: 'ipaddress',
-    default: '127.0.0.1',
+    format: 'mongodb-uri',
+    default: 'mongodb://127.0.0.1:27017/',
     env: 'DB_HOST'
   },
   salt: {
@@ -27,6 +41,12 @@ const config = convict({
     format: String,
     default: '',
     env: 'SALT'
+  },
+  jwtSecret: {
+    doc: 'JWT Secret Key',
+    format: String,
+    default: '',
+    env: 'JWT_SECRET'
   }
 });
 

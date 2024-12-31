@@ -6,7 +6,7 @@ import { EntityService } from './entity-service.js';
 
 const SALT_ROUNDS = 10;
 
-class UserService implements EntityService {
+class UserService implements EntityService<User> {
   async createUser(data: CreateUserDTO): Promise<User> {
     const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
     const newUser = await UserModel.create({
@@ -28,8 +28,8 @@ class UserService implements EntityService {
     return UserModel.findOne({ email }).exec() as Promise<User | null>;
   }
 
-  async updateUserAvatar(userId: string, avatarPath: string): Promise<any> {
-    return UserModel.findByIdAndUpdate(userId, { avatar: avatarPath }, { new: true }).exec();
+  async updateUserAvatar(userId: string, avatarPath: string): Promise<User | null> {
+    return UserModel.findByIdAndUpdate(userId, { avatar: avatarPath }, { new: true }).exec() as Promise<User | null>;
   }
 
   async authenticateUser(data: LoginDTO): Promise<User | null> {

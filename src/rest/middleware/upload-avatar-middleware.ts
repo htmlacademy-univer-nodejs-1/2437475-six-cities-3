@@ -3,6 +3,8 @@ import { Request } from 'express';
 import { nanoid } from 'nanoid';
 import mime from 'mime-types';
 import path from 'node:path';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const uploadsDir = process.env.UPLOADS_DIR || './uploads';
 
@@ -20,9 +22,9 @@ const storage = multer.diskStorage({
 const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedMimeTypes = ['image/jpeg', 'image/png'];
   if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
+    return cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, and GIF are allowed.'));
+    return cb(new Error('Invalid file type. Only JPEG, PNG, and GIF are allowed.'));
   }
 };
 
