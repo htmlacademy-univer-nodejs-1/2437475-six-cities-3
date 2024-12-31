@@ -116,7 +116,7 @@ export async function generateTestData(n: number, filepath: string, url: string)
     offer.rentOfferUser.id,
     offer.rentOfferUser.name,
     offer.rentOfferUser.email,
-    offer.rentOfferUser.avatar || '',
+    offer.rentOfferUser.avatar || '@/mocks/default-avatar.png',
     offer.rentOfferUser.password,
     offer.rentOfferUser.type,
     offer.coordinates.latitude.toString(),

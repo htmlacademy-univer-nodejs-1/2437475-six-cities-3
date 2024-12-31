@@ -5,6 +5,8 @@ import { Middleware } from '../middleware.js';
 interface Route {
   path: string;
   method: 'get' | 'post' | 'put' | 'delete';
+  // Не вполне уверена, как это починить, не переписывая половину проекта((
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler: RequestHandler<any, any, any, any>;
   middlewares: Middleware[];
 }

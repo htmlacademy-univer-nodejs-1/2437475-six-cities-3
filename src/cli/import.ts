@@ -97,7 +97,7 @@ function parseTSVRow(row: string): RentOfferWithUser {
       id: userId,
       name: userName,
       email: userEmail,
-      avatar: avatar || undefined,
+      avatar: avatar || '@/mocks/default-avatar.png',
       password,
       type: userType as User['type']
     },

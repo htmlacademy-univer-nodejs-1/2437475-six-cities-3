@@ -8,6 +8,8 @@ import { validateDTO } from '../validate-dto-middleware.js';
 import { checkEntityExists } from '../check-entity-exists.js';
 import { authenticate } from '../auth-middleware.js';
 import FavoriteModel from '../../../db/models/favorite.js';
+import CommentService from '../../../db/services/comment-service.js';
+import CommentModel from '../../../db/models/comment.js';
 
 class RentOfferController extends Controller {
   public router: Router;
@@ -23,7 +25,14 @@ class RentOfferController extends Controller {
       path: '/',
       method: 'post',
       handler: asyncHandler(this.createRentOffer.bind(this)),
-      middlewares: [validateDTO(CreateRentOfferDTO)],
+      middlewares: [authenticate, validateDTO(CreateRentOfferDTO)],
+    });
+
+    this.addRoute({
+      path: '/premium',
+      method: 'get',
+      handler: asyncHandler(this.getPremiumRentOffers.bind(this)),
+      middlewares: [],
     });
 
     this.addRoute({
@@ -57,7 +66,7 @@ class RentOfferController extends Controller {
 
   private async createRentOffer(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = res.locals.user?.id;
+      const userId = res.locals.user.id;
       if (!userId) {
         res.status(401).json({ error: 'Unauthorized' });
         return;
@@ -72,20 +81,32 @@ class RentOfferController extends Controller {
     }
   }
 
-  private async getAllRentOffers(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  private async getAllRentOffers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = res.locals.user?.id;
-      const rentOffers = await RentOfferService.findAllRentOffers();
+      const rentOffers = await RentOfferService.findAllRentOffers(req.body.limit || 60);
 
       let userFavorites = new Set<string>();
       if (userId) {
         const favorites = await FavoriteModel.find({ user: userId }, { rentOffer: 1, _id: 0 }).exec();
-        userFavorites = new Set(favorites.map(fav => fav.rentOffer.toString()));
+        userFavorites = new Set(favorites.map((fav) => fav.rentOffer.toString()));
       }
 
-      const updatedOffers = rentOffers.map((offer) => ({
-        ...offer.toObject(),
-        favorite: userId ? userFavorites.has(offer._id.toString()) : false,
+      const updatedOffers = await Promise.all(rentOffers.map(async (offer) => {
+        const commentCount = await CommentModel.countDocuments({ rentOffer: offer._id.toString() });
+
+        return {
+          price: offer.price,
+          name: offer.name,
+          type: offer.type,
+          favorite: userId ? userFavorites.has(offer._id.toString()) : false,
+          publishedAt: offer.publishedAt,
+          city: offer.city,
+          previewImage: offer.previewImage,
+          premium: offer.premium,
+          rating: offer.rating,
+          commentCount: commentCount,
+        };
       }));
 
       this.handleSuccess(res, updatedOffers);
@@ -108,7 +129,7 @@ class RentOfferController extends Controller {
 
   private async updateRentOffer(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = res.locals.user?.id;
+      const userId = res.locals.user.id;
       if (!userId) {
         res.status(401).json({ error: 'Unauthorized' });
         return;
@@ -150,8 +171,53 @@ class RentOfferController extends Controller {
         return;
       }
 
+      await CommentService.deleteCommentsForRentOffer(req.params.id);
       await RentOfferService.deleteRentOffer(req.params.id);
       this.handleSuccess(res);
+    } catch (error) {
+      if (error instanceof Error) {
+        this.handleError(next, error);
+      }
+    }
+  }
+
+  private async getPremiumRentOffers(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { city } = req.query;
+
+      if (!city || typeof city !== 'string') {
+        res.status(400).json({ error: 'City query parameter is required and must be a string.' });
+        return;
+      }
+
+      const premiumOffers = await RentOfferService.findPremiumRentOffersByCity(city, 3);
+
+      let userFavorites = new Set<string>();
+      const userId = res.locals.user?.id;
+
+      if (userId) {
+        const favorites = await FavoriteModel.find({ user: userId }, { rentOffer: 1, _id: 0 }).exec();
+        userFavorites = new Set(favorites.map((fav) => fav.rentOffer.toString()));
+      }
+
+      const responseOffers = await Promise.all(premiumOffers.map(async (offer) => {
+        const commentCount = await CommentModel.countDocuments({ rentOffer: offer._id.toString() });
+
+        return {
+          price: offer.price,
+          name: offer.name,
+          type: offer.type,
+          favorite: userId ? userFavorites.has(offer._id.toString()) : false,
+          publishedAt: offer.publishedAt,
+          city: offer.city,
+          previewImage: offer.previewImage,
+          premium: offer.premium,
+          rating: offer.rating,
+          commentCount: commentCount,
+        };
+      }));
+
+      this.handleSuccess(res, responseOffers);
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(next, error);

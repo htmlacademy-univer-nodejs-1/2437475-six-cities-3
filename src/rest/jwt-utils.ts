@@ -1,4 +1,6 @@
 import { SignJWT, jwtVerify, JWTPayload } from 'jose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secure-secret';
 const JWT_EXPIRATION_TIME = '1h';
